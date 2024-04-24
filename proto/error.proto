@@ -1,0 +1,7 @@
+syntax = "proto3";
+option go_package = "/pb"; //生成コードの出力先
+package proto;
+
+message Error{
+    string message = 1;
+}

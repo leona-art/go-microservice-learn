@@ -1,0 +1,77 @@
+// Queryservice用のParam型とResult型を定義
+
+syntax = "proto3";
+option go_package = "/pb"; //生成コードの出力先
+
+// error型のインポート
+import "proto/error.proto";
+// モデルのインポート
+import "proto/models.proto";
+// google/protobufのデータ型をインポート
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+package proto;
+
+// カテゴリ検索用のParam型
+message CategoryParam{
+    string id=1;
+}
+// 商品カテゴリを複数取得するためのResult型
+message CategoriesResult{
+    repeated Category categories=1;
+    Error error=2;
+    google.protobuf.Timestamp timestamp=3;
+}
+
+// 商品カテゴリを1つ取得するためのResult型
+message CategoryResult{
+    // エラーか検索結果のどちらかを返す
+    oneof result{
+        Category category=1;
+        Error error=2;
+    }
+    google.protobuf.Timestamp timestamp=3;
+}
+
+// 商品検索用のParam型
+message ProductParam{
+    string id=1;
+    string keyword=2; //キーワード
+}
+
+// 商品を複数取得するためのResult型
+message ProductsResult{
+    repeated Product products=1;
+    Error error=2;
+    google.protobuf.Timestamp timestamp=3;
+}
+
+// 商品を1つ取得するためのResult型
+message ProductResult{
+    // エラーか検索結果のどちらかを返す
+    oneof result {
+        Product product=1;
+        Error error=2;
+    }
+    google.protobuf.Timestamp timestamp=3;
+}
+
+
+// 商品カテゴリ問い合わせサービス型
+service CategoryQuery{
+    // すべてのカテゴリを取得する
+    rpc List(google.protobuf.Empty) returns (CategoriesResult);
+    // 指定したカテゴリを取得する
+    rpc ById(CategoryParam) returns (CategoryResult);
+}
+
+// 商品問い合わせサービス型
+service ProductQuery{
+    // すべての商品を取得する
+    rpc List(google.protobuf.Empty) returns (ProductsResult);
+    // 指定した商品を取得する
+    rpc ById(ProductParam) returns (ProductResult);
+    // 指定されたキーワードの商品を取得する
+    rpc ByKeyword(ProductParam) returns (ProductsResult);
+}

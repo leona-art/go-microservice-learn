@@ -1,0 +1,69 @@
+// CommandService用のParam型とResult型を定義
+syntax = "proto3";
+option go_package = "/pb"; //生成コードの出力先
+
+// error型のインポート
+import "proto/error.proto";
+// モデルのインポート
+import "proto/models.proto";
+// google/protobufのデータ型をインポート
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+package proto;
+
+// 更新の種類 →　CRUD？？？
+enum CRUD{
+    UNKNOWN = 0;
+    INSERT = 1;
+    UPDATE = 2;
+    DELETE = 3;
+}
+
+// 商品カテゴリ更新Param型
+message CategoryUpParam{
+    string id=1;
+    string name=2;
+}
+
+// 商品更新Param型
+message ProductUpParam{
+    string id=1;
+    string name=2;
+    int32 price=3;
+    string categoryId=4;
+}
+
+// 商品カテゴリ更新Result型
+message CategoryUpResult{
+    Category category=1; //更新結果
+    Error error=2; //更新エラー
+    google.protobuf.Timestamp timestamp=3; //更新日時
+}
+
+// 商品更新Result型
+message ProductUpResult{
+    Product product=1; //更新結果
+    Error error=2; //更新エラー
+    google.protobuf.Timestamp timestamp=3; //更新日時
+}
+
+// 商品カテゴリ更新サービス型
+service CategoryCommand{
+    // 商品カテゴリの追加
+    rpc Create(CategoryUpParam) returns (CategoryUpResult);
+    // 商品カテゴリの更新
+    rpc Update(CategoryUpParam) returns (CategoryUpResult);
+    // 商品カテゴリの削除
+    rpc Delete(CategoryUpParam) returns (CategoryUpResult);
+}
+
+// 商品更新サービス型
+service ProductCommand{
+    // 商品の追加
+    rpc Create(ProductUpParam) returns (ProductUpResult);
+    // 商品の更新
+    rpc Update(ProductUpParam) returns (ProductUpResult);
+    // 商品の削除
+    rpc Delete(ProductUpParam) returns (ProductUpResult);
+}
